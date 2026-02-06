@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@font-face {
+  font-family: "Bahij";
+  src: url("/fonts/Bahij.woff2") format("woff2"); /* ✅ بدون /public */
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+html, body {
+  font-family: "Bahij", sans-serif !important;
+  direction: rtl;
+  text-align: right;
+}
+
+
+
+/* ✅ حل جذري للغة العربية */
+html,
+body {
+  direction: rtl;        /* يجعل الصفحة كاملة من اليمين لليسار */
+  text-align: right;     /* يجعل كل النصوص تبدأ من أقصى اليمين */
+}
+
+body {
+  margin: 0;
+  /* font-family: sans-serif; */
+}
+
+:root {
+  /* Brand Colors */
+  --color-primary: #00372C;
+  --color-secondary: #235D51;
+
+  /* Backgrounds */
+  --color-bg-default: #ffffff;
+  --color-bg-paper: #edeeb4;
+
+  /* Text */
+  --color-text-primary: #00372C;
+  --color-text-secondary: #235D51;
+}
+.auth-rtl {
+  direction: rtl;
+  text-align: right;
+}
+
+.auth-rtl .MuiTypography-root {
+  text-align: right !important;
+}
+
+
+.auth-rtl input,
+.auth-rtl textarea {
+  direction: rtl;
+  text-align: right;
+}
