@@ -84,11 +84,11 @@ export default function SignupMuiCard() {
       localStorage.setItem("isLoggedIn", "true");
 
       setSuccessOpen(true);
-      reset();
-      
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 1000);
+reset();
+
+setTimeout(() => {
+  router.push("/homePage"); 
+}, 1000);
       
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
      } catch (error: any) {

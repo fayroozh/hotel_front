@@ -77,11 +77,12 @@ export default function LoginMuiCard() {
       localStorage.setItem("isLoggedIn", "true");
 
       setSuccessOpen(true);
-      reset();
-      
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 1000);
+reset();
+
+setTimeout(() => {
+  router.push("/homePage"); 
+}, 1000);
+
       
     } catch (error: any) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
