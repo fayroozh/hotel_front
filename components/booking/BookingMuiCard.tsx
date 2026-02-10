@@ -13,7 +13,6 @@ import {
   FormHelperText,
 } from "@mui/material";
 
-
 // ✅ DatePicker imports
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -30,19 +29,20 @@ const inputRtlSx = {
 };
 
 type FormState = {
+  hotelName: string; // ✅ NEW
   fullName: string;
   phone: string;
   roomType: string;
   roomsCount: string;
   arrivalTime: string;
   departureTime: string;
-
   peopleCount: string;
-  bookingDate: Dayjs | null; // ✅ صار Dayjs
+  bookingDate: Dayjs | null; // ✅ Dayjs
   daysCount: string;
 };
 
 const initialState: FormState = {
+  hotelName: "", // ✅ NEW
   fullName: "",
   phone: "",
   roomType: "",
@@ -50,7 +50,7 @@ const initialState: FormState = {
   arrivalTime: "",
   departureTime: "",
   peopleCount: "",
-  bookingDate: null, // ✅ فاضي
+  bookingDate: null,
   daysCount: "",
 };
 
@@ -67,6 +67,11 @@ function isPositiveInt(value: string) {
 
 function validate(values: FormState) {
   const errors: Partial<Record<keyof FormState, string>> = {};
+
+  // ✅ NEW: اسم الفندق
+  if (values.hotelName.trim().length < 2) {
+    errors.hotelName = "أدخل اسم الفندق";
+  }
 
   if (values.fullName.trim().length < 3) {
     errors.fullName = "الاسم يجب أن يكون 3 أحرف على الأقل";
@@ -97,7 +102,6 @@ function validate(values: FormState) {
     errors.peopleCount = "أدخل عدد أشخاص صحيح";
   }
 
-  // ✅ تاريخ الحجز إجباري
   if (!values.bookingDate) {
     errors.bookingDate = "اختر تاريخ الحجز";
   }
@@ -162,6 +166,7 @@ export default function BookingMuiCard() {
     e.preventDefault();
 
     setTouched({
+      hotelName: true, // ✅ NEW
       fullName: true,
       phone: true,
       roomType: true,
@@ -218,7 +223,7 @@ export default function BookingMuiCard() {
         >
           {/* يمين: الفورم */}
           <Box
-            className="auth-rtl" 
+            className="auth-rtl"
             sx={{
               p: { xs: 3, md: 5 },
               display: "flex",
@@ -243,8 +248,8 @@ export default function BookingMuiCard() {
                   fontSize: 22,
                 }}
               >
-                احجز إقامتك الآن بكل سهولة واستمتع بأفضل الفنادق مع أسعار تناسبك وخدمة تضمن
-                راحتك من لحظة الوصول وحتى المغادرة
+                احجز إقامتك الآن بكل سهولة واستمتع بأفضل الفنادق مع أسعار تناسبك
+                وخدمة تضمن راحتك من لحظة الوصول وحتى المغادرة
               </Typography>
 
               <Box
@@ -252,6 +257,24 @@ export default function BookingMuiCard() {
                 onSubmit={handleSubmit}
                 sx={{ mt: 4, display: "grid", gap: 2, textAlign: "right" }}
               >
+                {/* ✅ NEW: اسم الفندق */}
+                <Typography sx={{ fontSize: 22, fontWeight: 600 }}>
+                  ادخل اسم الفندق
+                </Typography>
+                <FormControl fullWidth error={showError("hotelName")}>
+                  <OutlinedInput
+                    value={values.hotelName}
+                    onChange={handleChange("hotelName")}
+                    onBlur={handleBlur("hotelName")}
+                    inputProps={{ dir: "rtl" }}
+                    sx={inputRtlSx}
+                    disabled={isBooked}
+                  />
+                  {showError("hotelName") && (
+                    <FormHelperText>{errors.hotelName}</FormHelperText>
+                  )}
+                </FormControl>
+
                 {/* الاسم */}
                 <Typography sx={{ fontSize: 22, fontWeight: 600 }}>
                   الاسم الكامل
@@ -272,7 +295,7 @@ export default function BookingMuiCard() {
 
                 {/* الموبايل */}
                 <Typography sx={{ fontSize: 22, fontWeight: 600 }}>
-                   رقم الموبايل
+                  رقم الموبايل
                 </Typography>
                 <FormControl fullWidth error={showError("phone")}>
                   <OutlinedInput
@@ -298,7 +321,7 @@ export default function BookingMuiCard() {
                 >
                   <Box>
                     <Typography sx={{ fontSize: 20, fontWeight: 600 }}>
-                       نوع الغرف
+                      نوع الغرف
                     </Typography>
                     <FormControl fullWidth error={showError("roomType")}>
                       <OutlinedInput
@@ -317,7 +340,7 @@ export default function BookingMuiCard() {
 
                   <Box>
                     <Typography sx={{ fontSize: 20, fontWeight: 600 }}>
-                       عدد الغرف 
+                      عدد الغرف
                     </Typography>
                     <FormControl fullWidth error={showError("roomsCount")}>
                       <OutlinedInput
@@ -395,7 +418,7 @@ export default function BookingMuiCard() {
                   {/* عدد الأشخاص */}
                   <Box>
                     <Typography sx={{ fontSize: 20, fontWeight: 600 }}>
-                       عدد الأشخاص
+                      عدد الأشخاص
                     </Typography>
                     <FormControl fullWidth error={showError("peopleCount")}>
                       <OutlinedInput
@@ -412,7 +435,7 @@ export default function BookingMuiCard() {
                     </FormControl>
                   </Box>
 
-                  {/* ✅ DatePicker فاضي */}
+                  {/* DatePicker */}
                   <Box>
                     <Typography sx={{ fontSize: 20, fontWeight: 600 }}>
                       تاريخ الحجز
@@ -423,7 +446,10 @@ export default function BookingMuiCard() {
                         value={values.bookingDate}
                         onChange={(newValue) => {
                           if (isBooked) return;
-                          setValues((prev) => ({ ...prev, bookingDate: newValue }));
+                          setValues((prev) => ({
+                            ...prev,
+                            bookingDate: newValue,
+                          }));
                         }}
                         minDate={dayjs()}
                         disabled={isBooked}
@@ -471,8 +497,8 @@ export default function BookingMuiCard() {
                 </Box>
 
                 <Typography sx={{ mt: 1, fontSize: 20, color: "text.secondary" }}>
-                  الدفع كاش عند استلام الغرف علماً أنك تفقد الحجز في حال التأخر عن الوصول
-                  في الوقت المحدد
+                  الدفع كاش عند استلام الغرف علماً أنك تفقد الحجز في حال التأخر عن
+                  الوصول في الوقت المحدد
                 </Typography>
 
                 {/* الأزرار */}
@@ -520,75 +546,75 @@ export default function BookingMuiCard() {
           </Box>
 
           {/* يسار: الصور */}
-  <Box sx={{ p: { xs: 3, md: 5 }, display: "flex", justifyContent: "center" }}>
-          <Box sx={{ width: 430, display: "flex", flexDirection: "column", gap: 1 }}>
-            <Box sx={{ display: "flex", justifyContent: "space-between", gap: 1 }}>
-              <Box
-                sx={{
-                  width: 180,
-                  height: 470,
-                  borderRadius: 1,
-                  border: "0.5px solid #0F3D2E",
-                  backgroundClip: "padding-box",
-                  backgroundOrigin: "border-box",
-                  overflow: "hidden",
-                  backgroundImage:
-                    "linear-gradient(rgba(15,61,46,0.20), rgba(15,61,46,0.20)), url(/auth/b.png)",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
-              />
-              <Box
-                sx={{
-                  width: 250,
-                  height: 470,
-                  borderRadius: 1,
-                  border: "0.5px solid #0F3D2E",
-                  backgroundClip: "padding-box",
-                  backgroundOrigin: "border-box",
-                  overflow: "hidden",
-                  backgroundImage:
-                    "linear-gradient(rgba(15,61,46,0.20), rgba(15,61,46,0.20)), url(/auth/a.png)",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
-              />
-            </Box>
+          <Box sx={{ p: { xs: 3, md: 5 }, display: "flex", justifyContent: "center" }}>
+            <Box sx={{ width: 430, display: "flex", flexDirection: "column", gap: 1 }}>
+              <Box sx={{ display: "flex", justifyContent: "space-between", gap: 1 }}>
+                <Box
+                  sx={{
+                    width: 180,
+                    height: 470,
+                    borderRadius: 1,
+                    border: "0.5px solid #0F3D2E",
+                    backgroundClip: "padding-box",
+                    backgroundOrigin: "border-box",
+                    overflow: "hidden",
+                    backgroundImage:
+                      "linear-gradient(rgba(15,61,46,0.20), rgba(15,61,46,0.20)), url(/auth/b.png)",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                />
+                <Box
+                  sx={{
+                    width: 250,
+                    height: 470,
+                    borderRadius: 1,
+                    border: "0.5px solid #0F3D2E",
+                    backgroundClip: "padding-box",
+                    backgroundOrigin: "border-box",
+                    overflow: "hidden",
+                    backgroundImage:
+                      "linear-gradient(rgba(15,61,46,0.20), rgba(15,61,46,0.20)), url(/auth/a.png)",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                />
+              </Box>
 
-            <Box sx={{ display: "flex", justifyContent: "space-between", gap: 1 }}>
-              <Box
-                sx={{
-                  width: 300,
-                  height: 320,
-                  borderRadius: 1,
-                  border: "0.5px solid #0F3D2E",
-                  backgroundClip: "padding-box",
-                  backgroundOrigin: "border-box",
-                  overflow: "hidden",
-                  backgroundImage:
-                    "linear-gradient(rgba(15,61,46,0.20), rgba(15,61,46,0.20)), url(/auth/d.png)",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
-              />
-              <Box
-                sx={{
-                  width: 130,
-                  height: 320,
-                  borderRadius: 1,
-                  border: "0.5px solid #0F3D2E",
-                  backgroundClip: "padding-box",
-                  backgroundOrigin: "border-box",
-                  overflow: "hidden",
-                  backgroundImage:
-                    "linear-gradient(rgba(15,61,46,0.20), rgba(15,61,46,0.20)), url(/auth/b.png)",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
-              />
+              <Box sx={{ display: "flex", justifyContent: "space-between", gap: 1 }}>
+                <Box
+                  sx={{
+                    width: 300,
+                    height: 320,
+                    borderRadius: 1,
+                    border: "0.5px solid #0F3D2E",
+                    backgroundClip: "padding-box",
+                    backgroundOrigin: "border-box",
+                    overflow: "hidden",
+                    backgroundImage:
+                      "linear-gradient(rgba(15,61,46,0.20), rgba(15,61,46,0.20)), url(/auth/d.png)",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                />
+                <Box
+                  sx={{
+                    width: 130,
+                    height: 320,
+                    borderRadius: 1,
+                    border: "0.5px solid #0F3D2E",
+                    backgroundClip: "padding-box",
+                    backgroundOrigin: "border-box",
+                    overflow: "hidden",
+                    backgroundImage:
+                      "linear-gradient(rgba(15,61,46,0.20), rgba(15,61,46,0.20)), url(/auth/b.png)",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                />
+              </Box>
             </Box>
           </Box>
-        </Box>
         </Box>
       </Paper>
     </Box>

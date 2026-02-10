@@ -83,7 +83,7 @@ export default function NavBar() {
 
   const drawer = (
     <Box sx={{ textAlign: "center", mt: 4 }}>
-      <Image src="/logo.svg" alt="Seramila" width={120} height={60} />
+      <Image src="/logo.svg" alt="Seramila" width={120} height={60} loading="eager" />
 
       <List sx={{ mt: 2 }}>
         {navItems.map((item) => (
@@ -132,10 +132,10 @@ export default function NavBar() {
         position="static"
         elevation={3}
         sx={{
-          width: "1280px",            
-          height: "90px",             
-          backgroundColor: "#ffffff", 
-          borderRadius: "20px",       
+          width: "1280px",            // ✅ مطابق Figma
+          height: "90px",             // ✅ مطابق Figma
+          backgroundColor: "#ffffff", // ✅ Fill
+          borderRadius: "20px",       // ✅ Corner radius
           justifyContent: "center",
         }}
       >

@@ -4,6 +4,7 @@ import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import Link from "next/link";
 
 type Props = {
   title: string;
@@ -91,6 +92,7 @@ export default function HotelCard({ title, image }: Props) {
           {title}
         </Typography>
 
+          <Link href="\hotels">
         <Button
           fullWidth
           sx={{
@@ -106,6 +108,7 @@ export default function HotelCard({ title, image }: Props) {
         >
           عرض المزيد
         </Button>
+        </Link>
       </CardContent>
     </Card>
   );

@@ -1,43 +1,27 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import HotelCard from "../hotels/HotelCard";
-import Link from "next/link";
-import api from "@/lib/api";
-import { CircularProgress } from "@mui/material";
 
-interface Hotel {
-  id: number;
-  name: string;
-  location: string;
-  stars: number;
-}
+import Link from "next/link";
+
+const hotels = [
+  {
+    title: "فندق شيراتون حلب",
+    image: "/sh.jpeg",
+  },
+  {
+    title: "فندق الشهباء – حلب",
+    image: "/shh.jpeg",
+  },
+  {
+    title: "فندق فور سيزون – دمشق",
+    image: "/ss.jpeg",
+  },
+];
 
 export default function HotelSection() {
-  const [hotels, setHotels] = useState<Hotel[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchHotels = async () => {
-      try {
-        const response = await api.get('/hotels');
-        if (Array.isArray(response.data)) {
-           setHotels(response.data.slice(0, 3));
-        }
-      } catch (error) {
-        console.error("Failed to fetch hotels:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchHotels();
-  }, []);
-
   return (
     <Box
       sx={{
@@ -62,38 +46,26 @@ export default function HotelSection() {
         </Typography>
 
         {/* البطاقات */}
-        {loading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <CircularProgress sx={{ color: '#fff' }} />
-          </Box>
-        ) : (
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: {
-                xs: "1fr",
-                sm: "repeat(2, 1fr)",
-                md: "repeat(3, 1fr)",
-              },
-              gap: "24px",
-              justifyItems: "center",
-            }}
-          >
-            {hotels.length > 0 ? (
-              hotels.map((hotel) => (
-                <HotelCard
-                  key={hotel.id}
-                  title={hotel.name}
-                  image={"/H.png"} // Default image as backend doesn't provide one
-                />
-              ))
-            ) : (
-              <Typography sx={{ color: '#fff', textAlign: 'center', width: '100%' }}>
-                لا توجد فنادق متاحة حالياً
-              </Typography>
-            )}
-          </Box>
-        )}
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "repeat(2, 1fr)",
+              md: "repeat(3, 1fr)",
+            },
+            gap: "24px",
+            justifyItems: "center",
+          }}
+        >
+          {hotels.map((hotel, index) => (
+            <HotelCard
+              key={index}
+              title={hotel.title}
+              image={hotel.image}
+            />
+          ))}
+        </Box>
 
         {/* الجزء السفلي (النص + الزر) */}
         <Box
