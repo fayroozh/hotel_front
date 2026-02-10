@@ -22,9 +22,9 @@ import Link from "next/link";
 
 const navItems = [
   { text: "الرئيسية", path: "/" },
-  { text: "المحافظات", path: "#services" },
+  { text: "المحافظات", path: "/governorates" },
   { text: "الفنادق المتوفرة", path: "/hotels" },
-  { text: "تواصل معنا", path: "#contact" },
+  { text: "تواصل معنا", path: "/contact" },
 ];
 
 export default function NavBar() {
@@ -132,10 +132,10 @@ export default function NavBar() {
         position="static"
         elevation={3}
         sx={{
-          width: "1280px",            // ✅ مطابق Figma
-          height: "90px",             // ✅ مطابق Figma
-          backgroundColor: "#ffffff", // ✅ Fill
-          borderRadius: "20px",       // ✅ Corner radius
+          width: "1280px",            
+          height: "90px",             
+          backgroundColor: "#ffffff", 
+          borderRadius: "20px",       
           justifyContent: "center",
         }}
       >

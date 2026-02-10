@@ -21,9 +21,9 @@ import Link from "next/link";
 
 const navItems = [
   { text: "الرئيسية", path: "/" },
-  { text: "المحافظات", path: "#services" },
+  { text: "المحافظات", path: "/governorates" },
   { text: "الفنادق المتوفرة", path: "/hotels" },
-  { text: "تواصل معنا", path: "#contact" },
+  { text: "تواصل معنا", path: "/contact" },
 ];
 
 export default function NavBar() {
