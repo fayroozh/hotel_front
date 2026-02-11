@@ -175,7 +175,7 @@ export default function HeroLogin() {
           </Button>
 
           {/* زر احجز الآن */}
-          <Link href="/booking">
+          {/* <Link href="/booking">
           <Button
             sx={{
               width: "247px",
@@ -194,7 +194,7 @@ export default function HeroLogin() {
           >
             احجز الآن
           </Button>
-          </Link>
+          </Link> */}
         </Box>
       </Container>
     </Box>

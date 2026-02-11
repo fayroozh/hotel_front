@@ -1,3 +1,4 @@
+
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -5,14 +6,37 @@ import HotelCard from "@/components/hotels/HotelCard";
 import Link from "next/link";
 import Button from "@mui/material/Button";
 
-
 const hotels = [
-  { title: "فندق شيراتون حلب", image: "/sh.jpeg" },
-  { title: "فندق الشهباء – حلب", image: "/shh.jpeg" },
-  { title: "فندق فور سيزون – دمشق", image: "/ss.jpeg" },
-  { title: "فندق داما روز – دمشق", image: "/dd.jpeg" },
-  { title: "فندق السفير – حمص", image: "/sf.jpeg" },
-  { title: "فندق غولدن بيش – اللاذقية", image: "/gg.jpeg" },
+  {
+    title: "فندق شيراتون حلب",
+    image: "/sh.jpeg",
+    href: "/Infor-hotel",
+  },
+  {
+    title: "فندق الشهباء – حلب",
+    image: "/shh.jpeg",
+    href: "/Infor-shahba",
+  },
+  {
+    title: "فندق فور سيزون – دمشق",
+    image: "/ss.jpeg",
+    href: "/Infor-forsezon",
+  },
+  {
+    title: "فندق لويس ان – حمص",
+    image: "/dd.jpeg",
+    href: "/Infor-lois",
+  },
+  {
+    title: "فندق السفير – حمص",
+    image: "/sf.jpeg",
+    href: "/Infor-sfire",
+  },
+  {
+    title: "فندق غولدن بيش – اللاذقية",
+    image: "/gg.jpeg",
+    href: "/Infor-golden",
+  },
 ];
 
 export default function HotelsPage() {
@@ -58,40 +82,41 @@ export default function HotelsPage() {
               key={index}
               title={hotel.title}
               image={hotel.image}
+              href={hotel.href}   
             />
           ))}
         </Box>
-
       </Container>
-      <Box
-  sx={{
-    mt: 8,
-    ml:16,
-    display: "flex",
-    justifyContent: "flex-end", // الزر على اليسار
-  }}
->
-  <Link href="/">
-    <Button
-      sx={{
-        backgroundColor: "#fff",
-        color: "#045746",
-        borderRadius: "999px",
-        px: 5,
-        py: 1.2,
-        fontSize:"20px",
-        fontWeight:500,
-        boxShadow: "0 6px 20px rgba(0,0,0,0.15)",
-        "&:hover": {
-          backgroundColor: "#f5f5f5",
-        },
-      }}
-    >
-      العودة
-    </Button>
-  </Link>
-</Box>
 
+      {/* زر العودة */}
+      <Box
+        sx={{
+          mt: 8,
+          ml: 16,
+          display: "flex",
+          justifyContent: "flex-end",
+        }}
+      >
+        <Link href="/">
+          <Button
+            sx={{
+              backgroundColor: "#fff",
+              color: "#045746",
+              borderRadius: "999px",
+              px: 5,
+              py: 1.2,
+              fontSize: "20px",
+              fontWeight: 500,
+              boxShadow: "0 6px 20px rgba(0,0,0,0.15)",
+              "&:hover": {
+                backgroundColor: "#f5f5f5",
+              },
+            }}
+          >
+            العودة
+          </Button>
+        </Link>
+      </Box>
     </Box>
   );
 }

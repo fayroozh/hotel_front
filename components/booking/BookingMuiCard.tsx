@@ -257,23 +257,7 @@ export default function BookingMuiCard() {
                 onSubmit={handleSubmit}
                 sx={{ mt: 4, display: "grid", gap: 2, textAlign: "right" }}
               >
-                {/* ✅ NEW: اسم الفندق */}
-                <Typography sx={{ fontSize: 22, fontWeight: 600 }}>
-                  ادخل اسم الفندق
-                </Typography>
-                <FormControl fullWidth error={showError("hotelName")}>
-                  <OutlinedInput
-                    value={values.hotelName}
-                    onChange={handleChange("hotelName")}
-                    onBlur={handleBlur("hotelName")}
-                    inputProps={{ dir: "rtl" }}
-                    sx={inputRtlSx}
-                    disabled={isBooked}
-                  />
-                  {showError("hotelName") && (
-                    <FormHelperText>{errors.hotelName}</FormHelperText>
-                  )}
-                </FormControl>
+                
 
                 {/* الاسم */}
                 <Typography sx={{ fontSize: 22, fontWeight: 600 }}>

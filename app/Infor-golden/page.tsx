@@ -12,7 +12,7 @@ import Instagram from "@mui/icons-material/Instagram";
 import ArrowDownward from "@mui/icons-material/ArrowDownward";
 import Link from "next/link";
 
-export default function InforHotel() {
+export default function HotelPage() {
   return (
     <Box
       sx={{
@@ -32,26 +32,19 @@ export default function InforHotel() {
           borderRadius: "24px",
           p: 4,
           display: "flex",
-          flexDirection: "row", // 🔥 هون العكس
+          flexDirection: "row",
           gap: 4,
         }}
       >
         {/* ===== معلومات الفندق (يمين) ===== */}
-        <Box
-          sx={{
-            flex: 1,
-            background: "#FFFFFF",
-            borderRadius: "20px",
-            p: 4,
-          }}
-        >
+        <Box sx={{ flex: 1, p: 4 }}>
           <Typography fontWeight="bold" mb={2}>
             معلومات الفندق :
           </Typography>
 
           <Typography lineHeight={2}>
-            الموقع : مدينة حلب، مقابل ساعة باب الفرج <br />
-            رقم التواصل : +963-992-121-111
+            الموقع : مدينة اللاذقية - الشاطئ الأزرق <br />
+            رقم التواصل : +963-960-900-999
           </Typography>
 
           <Typography fontWeight="bold" mt={3} mb={3}>
@@ -60,77 +53,70 @@ export default function InforHotel() {
 
           <Box mt={1} display="flex" alignItems="center" gap={1}>
             <Facebook sx={{ color: "#1877F2" }} />
-            <Typography>Sheraton Aleppo Hotel</Typography>
+            <Typography>Golden Beach</Typography>
           </Box>
 
           <Box mt={1} display="flex" alignItems="center" gap={1}>
             <Instagram sx={{ color: "#E1306C" }} />
-            <Typography>Sheraton_Aleppo_Hotel</Typography>
+            <Typography>Golden_Beach</Typography>
           </Box>
 
           <Box mt={4} display="flex" alignItems="center" gap={1}>
-            <Typography fontWeight="bold" sx={{fontSize:"25px"}}>
-              و لتجربة ممتعة معنا !
+            <Typography fontWeight="bold" sx={{ fontSize: "25px" }}>
+              و لتجربة ممتعة، هيا بنا
             </Typography>
             <ArrowDownward />
           </Box>
 
           <Link href="/booking">
-          <Button
-            fullWidth
-            sx={{
-              mt: 7,
-              background: "#145c45",
-              color: "#fff",
-              borderRadius: "30px",
-              py: 1.2,
-              fontWeight: "bold",
-              "&:hover": { background: "#0f4a38" },
-            }}
-          >
-            احجز الآن
-          </Button>
+            <Button
+              fullWidth
+              sx={{
+                mt: 7,
+                background: "#0F5E4E",
+                color: "#fff",
+                borderRadius: "30px",
+                py: 1.2,
+                fontWeight: "bold",
+                "&:hover": { background: "#0c4c3e" },
+              }}
+            >
+              احجز الآن
+            </Button>
           </Link>
 
-            <Link href="/hotels">
-          <Button
-            fullWidth
-            sx={{
-              mt: 2,
-              background: "#d91e0f",
-              color: "#fff",
-              borderRadius: "30px",
-              py: 1.2,
-              fontWeight: "bold",
-              "&:hover": { background: "#b71c1c" },
-            }}
-          >
-            عودة
-          </Button>
+          <Link href="/hotels">
+            <Button
+              fullWidth
+              sx={{
+                mt: 2,
+                background: "#D91E0F",
+                color: "#fff",
+                borderRadius: "30px",
+                py: 1.2,
+                fontWeight: "bold",
+                "&:hover": { background: "#b71c1c" },
+              }}
+            >
+              عودة
+            </Button>
           </Link>
         </Box>
 
         {/* ===== الخدمات (وسط) ===== */}
-        <Box
-          sx={{
-            flex: 1,
-            background: "#FFFFFF",
-            borderRadius: "20px",
-            p: 4,
-          }}
-        >
+        <Box sx={{ flex: 1, p: 4 }}>
           <Typography fontWeight="bold" mb={2}>
             الخدمات المتوفرة :
           </Typography>
 
           <Typography lineHeight={2}>
-            • انترنت سريع و مجاني <br />
+            • انترنت سريع ومجاني <br />
             • نادي رياضي <br />
-            • كافيه و مطعم <br />
+            • مطعم ومقهى <br />
             • باركينغ <br />
-            • خدمة غرف 24 ساعة <br />
-            • صالة أعراس <br />
-            • غرف اجتماعات
+            • كهرباء 24 ساعة <br />
+            • قاعة فخمة لكافة المناسبات <br />
+            • تراس خارجي
           </Typography>
 
           <Divider sx={{ my: 3 }} />
@@ -140,10 +126,10 @@ export default function InforHotel() {
           </Typography>
 
           <Typography lineHeight={2}>
-            • غرفة مفردة $100 <br />
-            • غرفة مزدوجة $200 <br />
-            • جناح صغير $300 <br />
-            • جناح مزدوج $400
+            • غرفة مفردة $90 <br />
+            • غرفة مزدوجة $160 <br />
+            • جناح مفرد $270 <br />
+            • جناح مزدوج $350
           </Typography>
         </Box>
 
@@ -152,7 +138,7 @@ export default function InforHotel() {
           <Box sx={{ position: "relative" }}>
             <Box
               component="img"
-              src="/hotel-img/sh.jpeg"
+              src="/hotel-img/go.jpeg"   // تأكد أن الصورة موجودة بهذا الاسم
               sx={{
                 width: "100%",
                 height: 260,
@@ -180,15 +166,15 @@ export default function InforHotel() {
             </Box>
           </Box>
 
-          <Typography mt={5} fontWeight="bold" >
-            شيراتون :
+          <Typography mt={5} fontWeight="bold">
+            غولدن بيش :
           </Typography>
 
           <Typography mt={2} lineHeight={1.9}>
-            فندق خمس نجوم يقع في مدينة حلب القديمة، بالقرب من المعالم
-            التاريخية. يجمع بين الفخامة الكلاسيكية والطابع الشرقي القديم
-            للمباني الحلبية، حيث يجمع بين واجهة تاريخية تعود للقرن الـ15
-            مع مساحات داخلية عصرية.
+            يقع في قلب المنطقة السياحية شمال اللاذقية،
+            ويضم 63 غرفة و6 أجنحة فاخرة.
+            يوفر لضيوفه إقامة مريحة بإطلالة ساحرة على البحر
+            وحدائق خلابة ومناظر طبيعية بمساحة إجمالية تبلغ 1400 م².
           </Typography>
         </Box>
       </Box>

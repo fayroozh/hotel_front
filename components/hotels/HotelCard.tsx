@@ -1,3 +1,5 @@
+
+
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
@@ -9,9 +11,10 @@ import Link from "next/link";
 type Props = {
   title: string;
   image: string;
+  href: string; // 👈 أضفنا الرابط هنا
 };
 
-export default function HotelCard({ title, image }: Props) {
+export default function HotelCard({ title, image, href }: Props) {
   return (
     <Card
       sx={{
@@ -36,7 +39,7 @@ export default function HotelCard({ title, image }: Props) {
           border: "1px solid #045746",
           position: "relative",
           mb: 2,
-          mt:1,
+          mt: 1,
         }}
       >
         {/* ⭐ Badge */}
@@ -92,22 +95,23 @@ export default function HotelCard({ title, image }: Props) {
           {title}
         </Typography>
 
-          <Link href="\hotels">
-        <Button
-          fullWidth
-          sx={{
-            backgroundColor: "#045746",
-            color: "#fff",
-            borderRadius: "12px",
-            py: 1,
-            fontSize: "14px",
-            "&:hover": {
-              backgroundColor: "#09473A",
-            },
-          }}
-        >
-          عرض المزيد
-        </Button>
+        {/* 👇 الرابط صار ديناميكي */}
+        <Link href={href}>
+          <Button
+            fullWidth
+            sx={{
+              backgroundColor: "#045746",
+              color: "#fff",
+              borderRadius: "12px",
+              py: 1,
+              fontSize: "14px",
+              "&:hover": {
+                backgroundColor: "#09473A",
+              },
+            }}
+          >
+            عرض المزيد
+          </Button>
         </Link>
       </CardContent>
     </Card>

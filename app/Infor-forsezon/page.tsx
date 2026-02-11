@@ -12,7 +12,7 @@ import Instagram from "@mui/icons-material/Instagram";
 import ArrowDownward from "@mui/icons-material/ArrowDownward";
 import Link from "next/link";
 
-export default function InforHotel() {
+export default function HotelPage() {
   return (
     <Box
       sx={{
@@ -32,7 +32,7 @@ export default function InforHotel() {
           borderRadius: "24px",
           p: 4,
           display: "flex",
-          flexDirection: "row", // 🔥 هون العكس
+          flexDirection: "row",
           gap: 4,
         }}
       >
@@ -40,7 +40,6 @@ export default function InforHotel() {
         <Box
           sx={{
             flex: 1,
-            background: "#FFFFFF",
             borderRadius: "20px",
             p: 4,
           }}
@@ -50,8 +49,8 @@ export default function InforHotel() {
           </Typography>
 
           <Typography lineHeight={2}>
-            الموقع : مدينة حلب، مقابل ساعة باب الفرج <br />
-            رقم التواصل : +963-992-121-111
+            الموقع : مدينة دمشق - حي شُكري القوتلي - مقابل المتحف الوطني <br />
+            رقم التواصل : +963-988-444-520
           </Typography>
 
           <Typography fontWeight="bold" mt={3} mb={3}>
@@ -60,53 +59,53 @@ export default function InforHotel() {
 
           <Box mt={1} display="flex" alignItems="center" gap={1}>
             <Facebook sx={{ color: "#1877F2" }} />
-            <Typography>Sheraton Aleppo Hotel</Typography>
+            <Typography>Four Seasons Hotel Damascus</Typography>
           </Box>
 
           <Box mt={1} display="flex" alignItems="center" gap={1}>
             <Instagram sx={{ color: "#E1306C" }} />
-            <Typography>Sheraton_Aleppo_Hotel</Typography>
+            <Typography>Four_Seasons_Hotel_Damascus</Typography>
           </Box>
 
           <Box mt={4} display="flex" alignItems="center" gap={1}>
-            <Typography fontWeight="bold" sx={{fontSize:"25px"}}>
-              و لتجربة ممتعة معنا !
+            <Typography fontWeight="bold" sx={{ fontSize: "25px" }}>
+              و لتجربة ممتعة، هيا بنا
             </Typography>
             <ArrowDownward />
           </Box>
 
           <Link href="/booking">
-          <Button
-            fullWidth
-            sx={{
-              mt: 7,
-              background: "#145c45",
-              color: "#fff",
-              borderRadius: "30px",
-              py: 1.2,
-              fontWeight: "bold",
-              "&:hover": { background: "#0f4a38" },
-            }}
-          >
-            احجز الآن
-          </Button>
+            <Button
+              fullWidth
+              sx={{
+                mt: 7,
+                background: "#0F5E4E",
+                color: "#fff",
+                borderRadius: "30px",
+                py: 1.2,
+                fontWeight: "bold",
+                "&:hover": { background: "#0c4c3e" },
+              }}
+            >
+              احجز الآن
+            </Button>
           </Link>
 
-            <Link href="/hotels">
-          <Button
-            fullWidth
-            sx={{
-              mt: 2,
-              background: "#d91e0f",
-              color: "#fff",
-              borderRadius: "30px",
-              py: 1.2,
-              fontWeight: "bold",
-              "&:hover": { background: "#b71c1c" },
-            }}
-          >
-            عودة
-          </Button>
+          <Link href="/hotels">
+            <Button
+              fullWidth
+              sx={{
+                mt: 2,
+                background: "#D91E0F",
+                color: "#fff",
+                borderRadius: "30px",
+                py: 1.2,
+                fontWeight: "bold",
+                "&:hover": { background: "#b71c1c" },
+              }}
+            >
+              عودة
+            </Button>
           </Link>
         </Box>
 
@@ -114,7 +113,6 @@ export default function InforHotel() {
         <Box
           sx={{
             flex: 1,
-            background: "#FFFFFF",
             borderRadius: "20px",
             p: 4,
           }}
@@ -124,13 +122,14 @@ export default function InforHotel() {
           </Typography>
 
           <Typography lineHeight={2}>
-            • انترنت سريع و مجاني <br />
+            • انترنت سريع ومجاني <br />
             • نادي رياضي <br />
-            • كافيه و مطعم <br />
-            • باركينغ <br />
-            • خدمة غرف 24 ساعة <br />
-            • صالة أعراس <br />
-            • غرف اجتماعات
+            • مطعم إيطالي <br />
+            • مسبح خارجي <br />
+            • كهرباء 24 ساعة <br />
+            • صالة أفراح <br />
+            • غرف اجتماعات <br />
+            • تراس خارجي
           </Typography>
 
           <Divider sx={{ my: 3 }} />
@@ -140,10 +139,10 @@ export default function InforHotel() {
           </Typography>
 
           <Typography lineHeight={2}>
-            • غرفة مفردة $100 <br />
-            • غرفة مزدوجة $200 <br />
-            • جناح صغير $300 <br />
-            • جناح مزدوج $400
+            • غرفة مفردة $150 <br />
+            • غرفة مزدوجة $300 <br />
+            • جناح مفرد $300 <br />
+            • جناح مزدوج $500
           </Typography>
         </Box>
 
@@ -152,7 +151,7 @@ export default function InforHotel() {
           <Box sx={{ position: "relative" }}>
             <Box
               component="img"
-              src="/hotel-img/sh.jpeg"
+              src="/hotel-img/fs.jpeg"
               sx={{
                 width: "100%",
                 height: 260,
@@ -180,15 +179,15 @@ export default function InforHotel() {
             </Box>
           </Box>
 
-          <Typography mt={5} fontWeight="bold" >
-            شيراتون :
+          <Typography mt={5} fontWeight="bold">
+            الفور سيزون :
           </Typography>
 
           <Typography mt={2} lineHeight={1.9}>
-            فندق خمس نجوم يقع في مدينة حلب القديمة، بالقرب من المعالم
-            التاريخية. يجمع بين الفخامة الكلاسيكية والطابع الشرقي القديم
-            للمباني الحلبية، حيث يجمع بين واجهة تاريخية تعود للقرن الـ15
-            مع مساحات داخلية عصرية.
+            يُعد تحفة معمارية تجسد تراث الشرق الأصيل مع اللمسات العصرية
+            الراقية. يقع هذا الفندق الفاخر المصنف خمس نجوم في قلب العاصمة
+            السورية، مقدماً لضيوفه مزيجاً مثالياً من الترف والراحة بمساحة
+            تتسع لـ 297 غرفة وجناح.
           </Typography>
         </Box>
       </Box>

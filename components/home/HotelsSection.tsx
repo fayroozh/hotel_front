@@ -1,25 +1,10 @@
+
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import HotelCard from "../hotels/HotelCard";
-
 import Link from "next/link";
-
-const hotels = [
-  {
-    title: "فندق شيراتون حلب",
-    image: "/sh.jpeg",
-  },
-  {
-    title: "فندق الشهباء – حلب",
-    image: "/shh.jpeg",
-  },
-  {
-    title: "فندق فور سيزون – دمشق",
-    image: "/ss.jpeg",
-  },
-];
 
 export default function HotelSection() {
   return (
@@ -58,16 +43,26 @@ export default function HotelSection() {
             justifyItems: "center",
           }}
         >
-          {hotels.map((hotel, index) => (
-            <HotelCard
-              key={index}
-              title={hotel.title}
-              image={hotel.image}
-            />
-          ))}
+          <HotelCard
+            title="فندق شيراتون حلب"
+            image="/sh.jpeg"
+            href="/Infor-hotel"
+          />
+
+          <HotelCard
+            title="فندق الشهباء – حلب"
+            image="/shh.jpeg"
+            href="/Infor-shahba"
+          />
+
+          <HotelCard
+            title="فندق فور سيزون – دمشق"
+            image="/ss.jpeg"
+            href="/Infor-forsezon"
+          />
         </Box>
 
-        {/* الجزء السفلي (النص + الزر) */}
+        {/* الجزء السفلي */}
         <Box
           sx={{
             mt: 15,
@@ -76,7 +71,6 @@ export default function HotelSection() {
             justifyContent: "space-between",
           }}
         >
-          {/* النص (يمين) */}
           <Typography
             sx={{
               color: "#fff",
@@ -87,24 +81,23 @@ export default function HotelSection() {
             عرض المزيد من الفنادق
           </Typography>
 
-          {/* الزر (يسار) */}
           <Link href="/hotels">
-          <Button
-            sx={{
-              backgroundColor: "#fff",
-              color: "#605E5E",
-              borderRadius: "999px",
-              px: 4,
-              py: 1.2,
-              fontSize: "14px",
-              boxShadow: "0 6px 20px rgba(0,0,0,0.15)",
-              "&:hover": {
-                backgroundColor: "#f5f5f5",
-              },
-            }}
-          >
-            عرض المزيد … »
-          </Button>
+            <Button
+              sx={{
+                backgroundColor: "#fff",
+                color: "#605E5E",
+                borderRadius: "999px",
+                px: 4,
+                py: 1.2,
+                fontSize: "14px",
+                boxShadow: "0 6px 20px rgba(0,0,0,0.15)",
+                "&:hover": {
+                  backgroundColor: "#f5f5f5",
+                },
+              }}
+            >
+              عرض المزيد … »
+            </Button>
           </Link>
         </Box>
       </Container>
