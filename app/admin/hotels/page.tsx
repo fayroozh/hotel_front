@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -43,20 +44,40 @@ export default function HotelsPage() {
   const [openDialog, setOpenDialog] = useState(false);
   const [currentHotel, setCurrentHotel] = useState<Partial<Hotel>>({});
   const [isEdit, setIsEdit] = useState(false);
-  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" as "success" | "error" });
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success" as "success" | "error",
+  });
 
-  const fetchHotels = () => {
-    setLoading(true);
-    api.get("/hotels")
-      .then((res) => {
-        setHotels(res.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch hotels", err);
-        setLoading(false);
-      });
-  };
+
+ const fetchHotels = () => {
+  setLoading(true);
+
+  api.get("/hotels")
+    .then((res) => {
+      let hotelsArray: any[] = [];
+
+      if (Array.isArray(res.data)) {
+        hotelsArray = res.data;
+      } else if (Array.isArray(res.data?.data)) {
+        hotelsArray = res.data.data;
+      } else if (Array.isArray(res.data?.hotels)) {
+        hotelsArray = res.data.hotels;
+      } else if (Array.isArray(res.data?.data?.hotels)) {
+        hotelsArray = res.data.data.hotels;
+      }
+
+      setHotels(hotelsArray);
+      setLoading(false);
+    })
+    .catch((err) => {
+      console.error("Fetch hotels failed:", err);
+      setHotels([]);
+      setLoading(false);
+    });
+};
+
 
   useEffect(() => {
     fetchHotels();
@@ -85,42 +106,64 @@ export default function HotelsPage() {
 
   const handleSave = () => {
     if (isEdit && currentHotel.id) {
-      // Update
-      api.put(`/hotels/${currentHotel.id}`, currentHotel)
+      api
+        .put(`/hotels/${currentHotel.id}`, currentHotel)
         .then(() => {
-          setSnackbar({ open: true, message: "تم تحديث الفندق بنجاح", severity: "success" });
+          setSnackbar({
+            open: true,
+            message: "تم تحديث الفندق بنجاح",
+            severity: "success",
+          });
           fetchHotels();
           handleCloseDialog();
         })
-        .catch((err) => {
-            console.error(err);
-          setSnackbar({ open: true, message: "حدث خطأ أثناء التحديث", severity: "error" });
+        .catch(() => {
+          setSnackbar({
+            open: true,
+            message: "حدث خطأ أثناء التحديث",
+            severity: "error",
+          });
         });
     } else {
-      // Create
-      api.post("/hotels", currentHotel)
+      api
+        .post("/hotels", currentHotel)
         .then(() => {
-          setSnackbar({ open: true, message: "تم إضافة الفندق بنجاح", severity: "success" });
+          setSnackbar({
+            open: true,
+            message: "تم إضافة الفندق بنجاح",
+            severity: "success",
+          });
           fetchHotels();
           handleCloseDialog();
         })
-        .catch((err) => {
-            console.error(err);
-          setSnackbar({ open: true, message: "حدث خطأ أثناء الإضافة", severity: "error" });
+        .catch(() => {
+          setSnackbar({
+            open: true,
+            message: "حدث خطأ أثناء الإضافة",
+            severity: "error",
+          });
         });
     }
   };
 
   const handleDelete = (id: number) => {
     if (confirm("هل أنت متأكد من حذف هذا الفندق؟")) {
-      api.delete(`/hotels/${id}`)
+      api
+        .delete(`/hotels/${id}`)
         .then(() => {
-          setSnackbar({ open: true, message: "تم الحذف بنجاح", severity: "success" });
+          setSnackbar({
+            open: true,
+            message: "تم الحذف بنجاح",
+            severity: "success",
+          });
           fetchHotels();
         })
-        .catch((err) => {
-            console.error(err);
-          setSnackbar({ open: true, message: "حدث خطأ أثناء الحذف", severity: "error" });
+        .catch(() => {
+          setSnackbar({
+            open: true,
+            message: "حدث خطأ أثناء الحذف",
+            severity: "error",
+          });
         });
     }
   };
@@ -149,15 +192,31 @@ export default function HotelsPage() {
           <CircularProgress />
         </Box>
       ) : (
-        <TableContainer component={Paper} sx={{ borderRadius: "16px", boxShadow: "0 4px 20px rgba(0,0,0,0.05)" }}>
+        <TableContainer
+          component={Paper}
+          sx={{
+            borderRadius: "16px",
+            boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
+          }}
+        >
           <Table>
             <TableHead sx={{ backgroundColor: "#f5f5f5" }}>
               <TableRow>
-                <TableCell align="right" sx={{ fontWeight: 700 }}>الاسم</TableCell>
-                <TableCell align="right" sx={{ fontWeight: 700 }}>الموقع</TableCell>
-                <TableCell align="right" sx={{ fontWeight: 700 }}>النجوم</TableCell>
-                <TableCell align="right" sx={{ fontWeight: 700 }}>الحالة</TableCell>
-                <TableCell align="center" sx={{ fontWeight: 700 }}>الإجراءات</TableCell>
+                <TableCell align="right" sx={{ fontWeight: 700 }}>
+                  الاسم
+                </TableCell>
+                <TableCell align="right" sx={{ fontWeight: 700 }}>
+                  الموقع
+                </TableCell>
+                <TableCell align="right" sx={{ fontWeight: 700 }}>
+                  النجوم
+                </TableCell>
+                <TableCell align="right" sx={{ fontWeight: 700 }}>
+                  الحالة
+                </TableCell>
+                <TableCell align="center" sx={{ fontWeight: 700 }}>
+                  الإجراءات
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -175,26 +234,43 @@ export default function HotelsPage() {
                         borderRadius: "8px",
                         fontSize: "12px",
                         fontWeight: 600,
-                        backgroundColor: hotel.status === "approved" ? "#E8F5E9" : "#FFF3E0",
-                        color: hotel.status === "approved" ? "#2E7D32" : "#EF6C00",
+                        backgroundColor:
+                          hotel.status === "approved"
+                            ? "#E8F5E9"
+                            : "#FFF3E0",
+                        color:
+                          hotel.status === "approved"
+                            ? "#2E7D32"
+                            : "#EF6C00",
                       }}
                     >
-                      {hotel.status === "approved" ? "نشط" : "قيد الانتظار"}
+                      {hotel.status === "approved"
+                        ? "نشط"
+                        : "قيد الانتظار"}
                     </Box>
                   </TableCell>
                   <TableCell align="center">
-                    <IconButton color="primary" onClick={() => handleOpenDialog(hotel)}>
+                    <IconButton
+                      color="primary"
+                      onClick={() => handleOpenDialog(hotel)}
+                    >
                       <EditIcon />
                     </IconButton>
-                    <IconButton color="error" onClick={() => handleDelete(hotel.id)}>
+                    <IconButton
+                      color="error"
+                      onClick={() => handleDelete(hotel.id)}
+                    >
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
+
               {hotels.length === 0 && (
                 <TableRow>
-                    <TableCell colSpan={5} align="center">لا يوجد فنادق حالياً</TableCell>
+                  <TableCell colSpan={5} align="center">
+                    لا يوجد فنادق حالياً
+                  </TableCell>
                 </TableRow>
               )}
             </TableBody>
@@ -202,7 +278,7 @@ export default function HotelsPage() {
         </TableContainer>
       )}
 
-      {/* Dialog for Add/Edit */}
+      {/* Dialog */}
       <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="sm">
         <DialogTitle sx={{ textAlign: "right" }}>
           {isEdit ? "تعديل الفندق" : "إضافة فندق جديد"}
@@ -213,14 +289,18 @@ export default function HotelsPage() {
               label="اسم الفندق"
               fullWidth
               value={currentHotel.name || ""}
-              onChange={(e) => setCurrentHotel({ ...currentHotel, name: e.target.value })}
+              onChange={(e) =>
+                setCurrentHotel({ ...currentHotel, name: e.target.value })
+              }
               dir="rtl"
             />
             <TextField
               label="الموقع"
               fullWidth
               value={currentHotel.location || ""}
-              onChange={(e) => setCurrentHotel({ ...currentHotel, location: e.target.value })}
+              onChange={(e) =>
+                setCurrentHotel({ ...currentHotel, location: e.target.value })
+              }
               dir="rtl"
             />
             <TextField
@@ -228,7 +308,12 @@ export default function HotelsPage() {
               label="عدد النجوم"
               fullWidth
               value={currentHotel.stars || 3}
-              onChange={(e) => setCurrentHotel({ ...currentHotel, stars: Number(e.target.value) })}
+              onChange={(e) =>
+                setCurrentHotel({
+                  ...currentHotel,
+                  stars: Number(e.target.value),
+                })
+              }
               dir="rtl"
             >
               {[1, 2, 3, 4, 5].map((star) => (
@@ -243,7 +328,12 @@ export default function HotelsPage() {
               multiline
               rows={3}
               value={currentHotel.description || ""}
-              onChange={(e) => setCurrentHotel({ ...currentHotel, description: e.target.value })}
+              onChange={(e) =>
+                setCurrentHotel({
+                  ...currentHotel,
+                  description: e.target.value,
+                })
+              }
               dir="rtl"
             />
           </Box>
@@ -252,7 +342,7 @@ export default function HotelsPage() {
           <Button onClick={handleCloseDialog} color="inherit">
             إلغاء
           </Button>
-          <Button onClick={handleSave} variant="contained" color="primary">
+          <Button onClick={handleSave} variant="contained">
             حفظ
           </Button>
         </DialogActions>
