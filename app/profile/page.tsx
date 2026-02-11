@@ -71,7 +71,7 @@ export default function ProfilePage() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("isLoggedIn");
-    router.push("/login");
+    router.push("/");
   };
 
   return (

@@ -68,10 +68,6 @@ function isPositiveInt(value: string) {
 function validate(values: FormState) {
   const errors: Partial<Record<keyof FormState, string>> = {};
 
-  // ✅ NEW: اسم الفندق
-  if (values.hotelName.trim().length < 2) {
-    errors.hotelName = "أدخل اسم الفندق";
-  }
 
   if (values.fullName.trim().length < 3) {
     errors.fullName = "الاسم يجب أن يكون 3 أحرف على الأقل";
@@ -257,8 +253,6 @@ export default function BookingMuiCard() {
                 onSubmit={handleSubmit}
                 sx={{ mt: 4, display: "grid", gap: 2, textAlign: "right" }}
               >
-                
-
                 {/* الاسم */}
                 <Typography sx={{ fontSize: 22, fontWeight: 600 }}>
                   الاسم الكامل

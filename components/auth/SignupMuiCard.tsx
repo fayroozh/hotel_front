@@ -156,9 +156,9 @@ export default function SignupMuiCard() {
           }}
         >
           <Box sx={{ width: "100%", maxWidth: 520 }}>
-            //هاد Box هو حاوية للفورم
+            {/* //هاد Box هو حاوية للفورم */}
             {/* لوجو */}
-            //هاد Box مسؤول عن ترتيب اللوجو
+            {/* //هاد Box مسؤول عن ترتيب اللوجو */}
             <Box sx={{ mt: -8, mb: 3, width: "100%", display: "flex", justifyContent: "center" }}>
               <Box component="img" src="/logo.svg" alt="Seramila" sx={{ height: 130, width: "auto" }} />
             </Box>
@@ -190,37 +190,39 @@ export default function SignupMuiCard() {
                   {errorMessage}
                 </Alert>
               )}
-              //إذا في رسالة خطأ → اعرض Alert
-              //إذا ما في → لا تعرض شي
+              {/* //إذا في رسالة خطأ → اعرض Alert
+              //إذا ما في → لا تعرض شي */}
 
               {/* الاسم */}
               <Typography variant="caption" sx={{ fontSize: 20, fontWeight: 600 }}>الاسم</Typography>
               <FormControl fullWidth error={!!errors.name}>
-                //هاد غلاف للحقل
+                {/* //هاد غلاف للحقل
                 //error={!!errors.name}
                 //إذا في خطأ بحقل الاسم → يصير لونه أحمر
-                //!! بتحوله لقيمة boolean (true / false)
+                //!! بتحوله لقيمة boolean (true / false) */}
                 <OutlinedInput type="text" inputProps={{ dir: "rtl" }} sx={inputRtlSx}
                 {...register("name")}//هاد بيربط الحقل مع react-hook-form..يخزن قيمته..يطبق التحقق عليه
      
                />
                 <FormHelperText sx={{ fontSize: 14 }}>
                   {errors.name?.message}
-                  //إذا الاسم فاضيZod رح يعطي رسالة
+                  {/* //إذا الاسم فاضيZod رح يعطي رسالة */}
                 </FormHelperText>
               </FormControl>
 
               {/* البريد */}
               <Typography variant="caption" sx={{ fontSize: 20, fontWeight: 600 }}>البريد الالكتروني</Typography>
               <FormControl fullWidth error={!!errors.email}>
-                //هاد غلاف للحقل
+                {/* //هاد غلاف للحقل
                 //error={!!errors.name}
                 //إذا في خطأ بحقل الاسم → يصير لونه أحمر
-                //!! بتحوله لقيمة boolean (true / false)
+                //!! بتحوله لقيمة boolean (true / false) */}
                 <OutlinedInput type="email" inputProps={{ dir: "rtl" }} sx={inputRtlSx}
-                 {...register("email")} />//هاد بيربط الحقل مع react-hook-form..يخزن قيمته..يطبق التحقق عليه
+                 {...register("email")} >
+                  {/* هاد بيربط الحقل مع react-hook-form..يخزن قيمته..يطبق التحقق عليه */}
+                 </OutlinedInput>
                 <FormHelperText sx={{ fontSize: 14 }}>
-                  //إذا الاسم فاضيZod رح يعطي رسالة
+                  {/* //إذا الاسم فاضيZod رح يعطي رسالة */}
                   {errors.email?.message}
 
                 </FormHelperText>
@@ -266,6 +268,38 @@ export default function SignupMuiCard() {
           </Box>
         </Box>
 
+
+
+
+
+
+{/* يسار: الصور */}
+ <Box sx={{ p: { xs: 3, md: 5 },
+  display: "flex", justifyContent: "center", }} >
+     <Box sx={{ width: 430, display: "flex",
+       flexDirection: "column", gap: 1 }}> 
+       <Box sx={{ display: "flex", justifyContent: "space-between", gap: 1 }}> 
+        <Box sx={{ width: 180, height: 470, borderRadius: 1,
+           border: "0.5px solid #0F3D2E", overflow: "hidden", 
+           backgroundImage: "linear-gradient(rgba(15,61,46,0.20), rgba(15,61,46,0.20)), url(/auth/b.png)",
+            backgroundSize: "cover", backgroundPosition: "center", }} /> 
+            <Box sx={{ width: 250, height: 470, borderRadius: 1,
+               border: "0.5px solid #0F3D2E", overflow: "hidden",
+                backgroundImage: "linear-gradient(rgba(15,61,46,0.20), rgba(15,61,46,0.20)), url(/auth/a.png)",
+                 backgroundSize: "cover", backgroundPosition: "center", }} />
+                  </Box> <Box sx={{ display: "flex", justifyContent: "space-between", gap: 1 }}> 
+                    <Box sx={{ width: 300, height: 320, borderRadius: 1, border: "0.5px solid #0F3D2E",
+                       overflow: "hidden", backgroundImage: "linear-gradient(rgba(15,61,46,0.20), rgba(15,61,46,0.20)), url(/auth/d.png)",
+                        backgroundSize: "cover", backgroundPosition: "center", }} /> 
+                        <Box sx={{ width: 130, height: 320, borderRadius: 1, border: "0.5px solid #0F3D2E",
+                           overflow: "hidden", backgroundImage: "linear-gradient(rgba(15,61,46,0.20), rgba(15,61,46,0.20)), url(/auth/b.png)", 
+                           backgroundSize: "cover", backgroundPosition: "center", }} />
+                            </Box>
+                             </Box>
+                              </Box>
+                               </Box>
+
+
         {/* جزء الصور (تصميم فقط) */}
         <Box sx={{ p: { xs: 3, md: 5 }, display: "flex", justifyContent: "center" }}>
           {/* صور ثابتة كخلفية/ديكور */}
@@ -273,7 +307,6 @@ export default function SignupMuiCard() {
             {/* ... نفس كود الصور */}
           </Box>
         </Box>
-      </Box>
 
       {/* رسالة نجاح */}
       <Snackbar
