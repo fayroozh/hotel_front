@@ -197,6 +197,7 @@ export default function NavBar() {
   }}
 >
   {/* Profile icon */}
+  <Link href="/profile">
   <Box
     sx={{
       width: 40,
@@ -211,6 +212,7 @@ export default function NavBar() {
   >
     <AccountCircleOutlinedIcon sx={{ color: "#00372C", fontSize: 22 }} />
   </Box>
+  </Link>
 </Box>
           </Box>
         </Toolbar>
