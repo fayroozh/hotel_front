@@ -40,13 +40,13 @@ export default function ProfilePage() {
     api.get('/user').then(res => {
        const userData = res.data.data || res.data;
        setUser(userData);
-       localStorage.setItem('user', JSON.stringify(userData));
+       if (userData?.email) {
+         localStorage.setItem('user', JSON.stringify(userData));
+       }
     }).catch(err => console.error("Failed to fetch user", err));
 
-    // 3. Fetch Bookings Count
-    // Assuming there's an endpoint for user bookings, usually /bookings/my-bookings or just /bookings if scoped to user
-    // Since admin uses /bookings, we might need to check if /bookings returns only user bookings for non-admin
-    api.get('/bookings').then(res => {
+    // 3. Fetch Bookings Count (للمستخدم العادي عبر /bookings/my)
+    api.get('/bookings/my').then(res => {
         // If it returns an array
         if (Array.isArray(res.data)) {
             setBookingsCount(res.data.length);

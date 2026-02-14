@@ -59,35 +59,45 @@ export default function LoginMuiCard() {
   const onSubmit = async (data: FormValues) => {
     setErrorMessage(null);
     try {
-      // 1. Login (Through Proxy -> Remote)
-      // Note: We use /login which maps to /api/login via api.ts baseURL + axios call
-      // If backend expects /api/login, and baseURL is /api, we call .post('/login')
-      const response = await api.post("/login", data);
-      
-      // 2. Store Token (Fallback to token if cookie fails, or mixed mode)
+      localStorage.setItem("user", JSON.stringify({ email: data.email }));
+    } catch {}
+
+    try {
+      const response = await api.post(`/login`, data, {
+        headers: { Accept: "application/json" },
+      });
+
+      // ✅ تخزين التوكن
       if (response.data.access_token) {
         localStorage.setItem("token", response.data.access_token);
       }
-      
-      // 3. Get User details
-      // If token is in localStorage, interceptor adds it.
-      const userResponse = await api.get("/user"); // baseURL /api -> /api/user
 
-      localStorage.setItem("user", JSON.stringify(userResponse.data));
+      // ✅ تخزين بيانات المستخدم مباشرة من نفس response
+      if (response.data.user) {
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+      } else {
+        // fallback في حال السيرفر ما رجّع user
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ email: data.email })
+        );
+      }
+
       localStorage.setItem("isLoggedIn", "true");
 
       setSuccessOpen(true);
-reset();
+      reset();
 
-setTimeout(() => {
-  router.push("/homePage"); 
-}, 1000);
-
-      
-    } catch (error: any) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      setTimeout(() => {
+        router.push("/homePage");
+      }, 1000);
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
       console.error("Login error:", error);
-      setErrorMessage(error.response?.data?.message || "فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.");
+      setErrorMessage(
+        err.response?.data?.message ||
+          "فشل تسجيل الدخول. يرجى المحاولة مرة أخرى."
+      );
     }
   };
 
@@ -154,7 +164,7 @@ setTimeout(() => {
               السورية
             </Typography>
 
-            {/* ✅ فورم بقيود */}
+            {/* الفورم */}
             <Box
               component="form"
               onSubmit={handleSubmit(onSubmit)}
@@ -219,8 +229,14 @@ setTimeout(() => {
                 تسجيل الدخول عن طريق :
               </Typography>
 
-              {/* الأيقونات مع روابط */}
-              <Box sx={{ display: "flex", justifyContent: "center", gap: 3, mt: 1 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: 3,
+                  mt: 1,
+                }}
+              >
                 {[
                   {
                     src: "/icons/facebook.svg",
@@ -275,9 +291,28 @@ setTimeout(() => {
         </Box>
 
         {/* يسار: الصور */}
-        <Box sx={{ p: { xs: 3, md: 5 }, display: "flex", justifyContent: "center" }}>
-          <Box sx={{ width: 430, display: "flex", flexDirection: "column", gap: 1 }}>
-            <Box sx={{ display: "flex", justifyContent: "space-between", gap: 1 }}>
+        <Box
+          sx={{
+            p: { xs: 3, md: 5 },
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Box
+            sx={{
+              width: 430,
+              display: "flex",
+              flexDirection: "column",
+              gap: 1,
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                gap: 1,
+              }}
+            >
               <Box
                 sx={{
                   width: 180,
@@ -306,7 +341,13 @@ setTimeout(() => {
               />
             </Box>
 
-            <Box sx={{ display: "flex", justifyContent: "space-between", gap: 1 }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                gap: 1,
+              }}
+            >
               <Box
                 sx={{
                   width: 300,
@@ -338,7 +379,6 @@ setTimeout(() => {
         </Box>
       </Box>
 
-      {/* ✅ رسالة نجاح */}
       <Snackbar
         open={successOpen}
         autoHideDuration={3000}
@@ -350,7 +390,7 @@ setTimeout(() => {
           severity="success"
           variant="filled"
         >
-          تم تسجيل الدخول بنجاح 
+          تم تسجيل الدخول بنجاح
         </Alert>
       </Snackbar>
     </Paper>

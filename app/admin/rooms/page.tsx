@@ -46,6 +46,20 @@ interface Room {
   is_available: boolean;
 }
 
+function normalizeArrayResponse<T>(root: any): T[] {
+  if (Array.isArray(root)) return root;
+  const candidates = [
+    root?.data,
+    root?.rooms,
+    root?.data?.rooms,
+    root?.data?.data,
+  ];
+  for (const c of candidates) {
+    if (Array.isArray(c)) return c;
+  }
+  return [];
+}
+
 export default function RoomsPage() {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [hotels, setHotels] = useState<Hotel[]>([]);
@@ -59,7 +73,7 @@ export default function RoomsPage() {
     setLoading(true);
     api.get("/rooms")
       .then((res) => {
-        setRooms(res.data);
+        setRooms(normalizeArrayResponse<Room>(res.data));
         setLoading(false);
       })
       .catch((err) => {
@@ -69,7 +83,24 @@ export default function RoomsPage() {
   };
 
   const fetchHotels = () => {
-    api.get("/hotels").then((res) => setHotels(res.data));
+    api.get("/hotels").then((res) => {
+      const root = res.data;
+      const candidates = [
+        root?.data,
+        root?.data?.hotels,
+        root?.hotels,
+        root?.hotels?.data,
+        root,
+      ];
+      let list: any = [];
+      for (const c of candidates) {
+        if (Array.isArray(c)) {
+          list = c;
+          break;
+        }
+      }
+      setHotels(Array.isArray(list) ? list : []);
+    });
   };
 
   useEffect(() => {

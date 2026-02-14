@@ -38,12 +38,26 @@ interface Hotel {
   status: string;
 }
 
+function normalizeArrayResponse<T>(root: any): T[] {
+  if (Array.isArray(root)) return root;
+  const candidates = [
+    root?.data,
+    root?.hotels,
+    root?.data?.hotels,
+  ];
+  for (const c of candidates) {
+    if (Array.isArray(c)) return c;
+  }
+  return [];
+}
+
 export default function HotelsPage() {
   const [hotels, setHotels] = useState<Hotel[]>([]);
   const [loading, setLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
   const [currentHotel, setCurrentHotel] = useState<Partial<Hotel>>({});
   const [isEdit, setIsEdit] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
@@ -56,19 +70,7 @@ export default function HotelsPage() {
 
   api.get("/hotels")
     .then((res) => {
-      let hotelsArray: any[] = [];
-
-      if (Array.isArray(res.data)) {
-        hotelsArray = res.data;
-      } else if (Array.isArray(res.data?.data)) {
-        hotelsArray = res.data.data;
-      } else if (Array.isArray(res.data?.hotels)) {
-        hotelsArray = res.data.hotels;
-      } else if (Array.isArray(res.data?.data?.hotels)) {
-        hotelsArray = res.data.data.hotels;
-      }
-
-      setHotels(hotelsArray);
+      setHotels(normalizeArrayResponse<Hotel>(res.data));
       setLoading(false);
     })
     .catch((err) => {
@@ -96,53 +98,58 @@ export default function HotelsPage() {
       });
       setIsEdit(false);
     }
+    setImageFile(null);
     setOpenDialog(true);
   };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
     setCurrentHotel({});
+    setImageFile(null);
   };
 
-  const handleSave = () => {
-    if (isEdit && currentHotel.id) {
-      api
-        .put(`/hotels/${currentHotel.id}`, currentHotel)
-        .then(() => {
-          setSnackbar({
-            open: true,
-            message: "تم تحديث الفندق بنجاح",
-            severity: "success",
-          });
-          fetchHotels();
-          handleCloseDialog();
-        })
-        .catch(() => {
-          setSnackbar({
-            open: true,
-            message: "حدث خطأ أثناء التحديث",
-            severity: "error",
-          });
-        });
-    } else {
-      api
-        .post("/hotels", currentHotel)
-        .then(() => {
-          setSnackbar({
-            open: true,
-            message: "تم إضافة الفندق بنجاح",
-            severity: "success",
-          });
-          fetchHotels();
-          handleCloseDialog();
-        })
-        .catch(() => {
-          setSnackbar({
-            open: true,
-            message: "حدث خطأ أثناء الإضافة",
-            severity: "error",
-          });
-        });
+  const handleSave = async () => {
+    try {
+      const formData = new FormData();
+      if (currentHotel.name) formData.append('name', String(currentHotel.name));
+      if (currentHotel.location) formData.append('location', String(currentHotel.location));
+      if (currentHotel.stars !== undefined) formData.append('stars', String(currentHotel.stars));
+      if (currentHotel.description) formData.append('description', String(currentHotel.description));
+      if (imageFile) formData.append('image', imageFile);
+
+      const hasToken = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+      if (!hasToken) {
+        try { await api.get('/sanctum/csrf-cookie'); } catch {}
+      }
+
+      const req = isEdit && currentHotel.id
+        ? api.put(`/hotels/${currentHotel.id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+        : api.post("/hotels", formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+
+      const res = await req;
+      const hotel = res.data?.data || res.data;
+      if (!hotel || !hotel.id) {
+        setSnackbar({ open: true, message: "تعذر التأكد من حفظ الفندق على الخادم", severity: "error" });
+        return;
+      }
+
+      setSnackbar({
+        open: true,
+        message: isEdit ? "تم تحديث الفندق بنجاح" : "تم إضافة الفندق بنجاح",
+        severity: "success",
+      });
+
+      setOpenDialog(false);
+      setImageFile(null);
+      setCurrentHotel({});
+
+      fetchHotels();
+    } catch {
+      setSnackbar({
+        open: true,
+        message: isEdit ? "حدث خطأ أثناء التحديث" : "حدث خطأ أثناء الإضافة",
+        severity: "error",
+      });
     }
   };
 
@@ -336,6 +343,19 @@ export default function HotelsPage() {
               }
               dir="rtl"
             />
+          <Box>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  setCurrentHotel({ ...currentHotel, image: file.name } as any);
+                  setImageFile(file);
+                }
+              }}
+            />
+          </Box>
           </Box>
         </DialogContent>
         <DialogActions sx={{ justifyContent: "flex-start", p: 2 }}>

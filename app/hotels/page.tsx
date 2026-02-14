@@ -5,41 +5,37 @@ import Typography from "@mui/material/Typography";
 import HotelCard from "@/components/hotels/HotelCard";
 import Link from "next/link";
 import Button from "@mui/material/Button";
+import { useEffect, useState } from "react";
+import api, { BACKEND_URL } from "@/lib/api";
 
-const hotels = [
-  {
-    title: "فندق شيراتون حلب",
-    image: "/sh.jpeg",
-    href: "/Infor-hotel",
-  },
-  {
-    title: "فندق الشهباء – حلب",
-    image: "/shh.jpeg",
-    href: "/Infor-shahba",
-  },
-  {
-    title: "فندق فور سيزون – دمشق",
-    image: "/ss.jpeg",
-    href: "/Infor-forsezon",
-  },
-  {
-    title: "فندق لويس ان – حمص",
-    image: "/dd.jpeg",
-    href: "/Infor-lois",
-  },
-  {
-    title: "فندق السفير – حمص",
-    image: "/sf.jpeg",
-    href: "/Infor-sfire",
-  },
-  {
-    title: "فندق غولدن بيش – اللاذقية",
-    image: "/gg.jpeg",
-    href: "/Infor-golden",
-  },
-];
+interface Hotel {
+  id: number;
+  name: string;
+  location: string;
+  stars: number;
+  description?: string;
+  image?: string | null;
+}
 
 export default function HotelsPage() {
+  const [hotels, setHotels] = useState<Hotel[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.get('/hotels').then(res => {
+      let hotelsArray: any[] = [];
+      if (Array.isArray(res.data)) hotelsArray = res.data;
+      else if (Array.isArray(res.data?.data)) hotelsArray = res.data.data;
+      else if (Array.isArray(res.data?.hotels)) hotelsArray = res.data.hotels;
+      else if (Array.isArray(res.data?.data?.hotels)) hotelsArray = res.data.data.hotels;
+      setHotels(hotelsArray);
+      setLoading(false);
+    }).catch(err => {
+      console.error('Failed to fetch hotels', err);
+      setLoading(false);
+    });
+  }, []);
+
   return (
     <Box
       sx={{
@@ -77,14 +73,22 @@ export default function HotelsPage() {
             justifyItems: "center",
           }}
         >
-          {hotels.map((hotel, index) => (
-            <HotelCard
-              key={index}
-              title={hotel.title}
-              image={hotel.image}
-              href={hotel.href}   
-            />
-          ))}
+          {loading ? (
+            <Typography sx={{ color: "#fff", textAlign: "center" }}>جاري التحميل...</Typography>
+          ) : (
+            hotels.map((hotel) => (
+              <HotelCard
+                key={hotel.id}
+                title={hotel.name}
+                image={
+                  hotel.image
+                    ? `${BACKEND_URL}/storage/${hotel.image}`
+                    : "/default-hotel.jpg"
+                }
+                href={`/hotels/${hotel.id}`}
+              />
+            ))
+          )}
         </Box>
       </Container>
 

@@ -1,11 +1,14 @@
 import axios from 'axios';
+export const BACKEND_URL = 'https://hotel-booking.xo.je';
 
 const api = axios.create({
-    baseURL: '/api', // Use local proxy to avoid CORS
+    baseURL: '/api',
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
     },
+    xsrfCookieName: 'XSRF-TOKEN',
+    xsrfHeaderName: 'X-XSRF-TOKEN',
     withCredentials: true,
 });
 

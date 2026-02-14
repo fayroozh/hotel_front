@@ -1,4 +1,3 @@
-
 import { Box, Typography } from "@mui/material";
 import Link from "next/link";
 import Image from "next/image";
@@ -15,7 +14,7 @@ import HotelIcon from "@mui/icons-material/Hotel";
 const menuItems = [
     { text: "لوحة التحكم", icon: <DashboardIcon />, path: "/admin" },
     { text: "إدارة الفنادق", icon: <BusinessIcon />, path: "/admin/hotels" },
-    { text: "إدارة الغرف", icon: <HotelIcon />, path: "/admin/rooms" },
+    
     {
         text: "إدارة الحجوزات",
         icon: <BookOnlineIcon />,

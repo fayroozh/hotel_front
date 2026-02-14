@@ -22,6 +22,7 @@ import {
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import api from "@/lib/api";
 
+
 interface Booking {
   id: number;
   user: {
@@ -41,6 +42,12 @@ interface Booking {
   status: string;
 }
 
+function normalizeArrayResponse<T>(data: any): T[] {
+  if (Array.isArray(data)) return data;
+  if (data?.data && Array.isArray(data.data)) return data.data;
+  return [];
+}
+
 export default function BookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,7 +59,7 @@ export default function BookingsPage() {
     setLoading(true);
     api.get("/bookings")
       .then((res) => {
-        setBookings(res.data);
+        setBookings(normalizeArrayResponse(res.data));
         setLoading(false);
       })
       .catch((err) => {

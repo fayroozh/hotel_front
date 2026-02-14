@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  env: {
+    NEXT_PUBLIC_API_URL: "https://hotel-booking.xo.je",
+  },
   async rewrites() {
     return [
       {
@@ -10,6 +13,10 @@ const nextConfig: NextConfig = {
       {
         source: "/sanctum/:path*",
         destination: "https://hotel-booking.xo.je/sanctum/:path*",
+      },
+      {
+        source: "/login",
+        destination: "https://hotel-booking.xo.je/login",
       },
     ];
   },
