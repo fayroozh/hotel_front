@@ -83,6 +83,7 @@ export default function SignupMuiCard() {
     setErrorMessage(null);
 
     try {
+      await api.get("/sanctum/csrf-cookie");
       // إرسال بيانات التسجيل للباك إند
       const response = await api.post("/register", {
         name: data.name,

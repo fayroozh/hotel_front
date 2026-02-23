@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import {
   Box,
@@ -67,64 +67,51 @@ function isPositiveInt(value: string) {
 
 function validate(values: FormState) {
   const errors: Partial<Record<keyof FormState, string>> = {};
-
-
-  if (values.fullName.trim().length < 3) {
-    errors.fullName = "الاسم يجب أن يكون 3 أحرف على الأقل";
-  }
-
-  const phone = values.phone.trim();
-  if (!/^\d{10,15}$/.test(phone)) {
-    errors.phone = "أدخل رقم موبايل صحيح (10 إلى 15 رقم)";
-  }
-
-  if (values.roomType.trim().length < 2) {
-    errors.roomType = "أدخل نوع الغرفة";
-  }
-
-  if (!isPositiveInt(values.roomsCount)) {
-    errors.roomsCount = "أدخل عدد غرف صحيح";
-  }
-
-  if (!isValidTimeHHMM(values.arrivalTime.trim())) {
-    errors.arrivalTime = "أدخل وقت وصول بصيغة HH:MM";
-  }
-
-  if (!isValidTimeHHMM(values.departureTime.trim())) {
-    errors.departureTime = "أدخل وقت مغادرة بصيغة HH:MM";
-  }
-
-  if (!isPositiveInt(values.peopleCount)) {
-    errors.peopleCount = "أدخل عدد أشخاص صحيح";
-  }
-
-  if (!values.bookingDate) {
-    errors.bookingDate = "اختر تاريخ الحجز";
-  }
-
-  if (!isPositiveInt(values.daysCount)) {
-    errors.daysCount = "أدخل عدد أيام صحيح";
-  }
-
-  // وقت المغادرة بعد الوصول
-  if (
-    isValidTimeHHMM(values.arrivalTime) &&
-    isValidTimeHHMM(values.departureTime)
-  ) {
-    const [ah, am] = values.arrivalTime.split(":").map(Number);
-    const [dh, dm] = values.departureTime.split(":").map(Number);
-    const arrival = ah * 60 + am;
-    const depart = dh * 60 + dm;
-    if (depart < arrival) {
-      errors.departureTime = "وقت المغادرة يجب أن يكون بعد وقت الوصول";
-    }
-  }
-
   return errors;
 }
 
 export default function BookingMuiCard() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const roomIdParam = searchParams.get("roomId");
+  const hotelNameParam = searchParams.get("hotelName") || "";
+  const [selectedRoomId, setSelectedRoomId] = React.useState<number | null>(null);
+  const [selectedHotelName, setSelectedHotelName] = React.useState<string>("");
+  const [findingRoom, setFindingRoom] = React.useState<boolean>(false);
+  React.useEffect(() => {
+    const setup = async () => {
+      const parsed = roomIdParam ? parseInt(roomIdParam, 10) : NaN;
+      if (parsed && !Number.isNaN(parsed)) {
+        setSelectedRoomId(parsed);
+        setSelectedHotelName(hotelNameParam || "");
+        return;
+      }
+      setFindingRoom(true);
+      try {
+        const api = (await import("@/lib/api")).default;
+        const res = await api.get("/hotels");
+        const root = res.data as unknown;
+        let hotels: Array<{ id: number; name?: string }> = [];
+        if (Array.isArray(root)) hotels = root as Array<{ id: number; name?: string }>;
+        else if (Array.isArray((root as any)?.data)) hotels = (root as any).data;
+        for (const h of hotels) {
+          try {
+            const roomsRes = await api.get(`/hotels/${h.id}/rooms`);
+            const roomsRoot = roomsRes.data as unknown;
+            const rooms: Array<{ id: number }> = Array.isArray(roomsRoot) ? roomsRoot : [];
+            if (rooms.length > 0) {
+              setSelectedRoomId(rooms[0].id);
+              setSelectedHotelName(h.name || "");
+              break;
+            }
+          } catch {}
+        }
+      } finally {
+        setFindingRoom(false);
+      }
+    };
+    setup();
+  }, [roomIdParam, hotelNameParam]);
 
   const [values, setValues] = React.useState<FormState>(initialState);
   const [touched, setTouched] = React.useState<
@@ -158,11 +145,11 @@ export default function BookingMuiCard() {
 
   const showError = (key: keyof FormState) => !!touched[key] && !!errors[key];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     setTouched({
-      hotelName: true, // ✅ NEW
+      hotelName: true,
       fullName: true,
       phone: true,
       roomType: true,
@@ -176,15 +163,75 @@ export default function BookingMuiCard() {
 
     if (!isFormValid) return;
 
-    setIsBooked(true);
+    let roomId = selectedRoomId ?? (roomIdParam ? parseInt(roomIdParam, 10) : NaN);
+    if (!roomId || Number.isNaN(roomId)) {
+      try {
+        const api = (await import("@/lib/api")).default;
+        const res = await api.get("/hotels");
+        type HotelBrief = { id: number; name?: string };
+        let hotels: HotelBrief[] = [];
+        const root: any = res.data;
+        if (Array.isArray(root)) hotels = root as HotelBrief[];
+        else if (Array.isArray(root?.data)) hotels = root.data as HotelBrief[];
+        for (const h of hotels) {
+          try {
+            const roomsRes = await api.get(`/hotels/${h.id}/rooms`);
+            type RoomBrief = { id: number };
+            const rooms: RoomBrief[] = Array.isArray(roomsRes.data) ? roomsRes.data : [];
+            if (rooms.length > 0) {
+              roomId = rooms[0].id;
+              setSelectedRoomId(roomId);
+              if (!hotelNameParam) setSelectedHotelName(h.name || "");
+              break;
+            }
+          } catch {}
+        }
+      } catch {}
+      if (!roomId || Number.isNaN(roomId)) {
+        alert("لا توجد غرف متاحة حالياً لإتمام الحجز التجريبي.");
+        return;
+      }
+    }
 
-    if (resetTimerRef.current) window.clearTimeout(resetTimerRef.current);
+    const start = values.bookingDate?.format("YYYY-MM-DD");
+    const days = parseInt(values.daysCount, 10);
+    // قيم افتراضية للتجربة: يوم واحد ابتداءً من الغد
+    const effectiveStart =
+      start && !Number.isNaN(days)
+        ? start
+        : dayjs().add(1, "day").format("YYYY-MM-DD");
+    const effectiveDays = !Number.isNaN(days) && days > 0 ? days : 1;
+    const end = dayjs(effectiveStart).add(effectiveDays, "day").format("YYYY-MM-DD");
 
-    resetTimerRef.current = window.setTimeout(() => {
-      setIsBooked(false);
-      setValues(initialState);
-      setTouched({});
-    }, 4000);
+    try {
+      await (await import("@/lib/api")).default.get("/sanctum/csrf-cookie");
+      const api = (await import("@/lib/api")).default;
+
+      const res = await api.post("/bookings", {
+        room_id: roomId,
+        start_date: effectiveStart,
+        end_date: end,
+      });
+
+
+      setIsBooked(true);
+      if (resetTimerRef.current) window.clearTimeout(resetTimerRef.current);
+      resetTimerRef.current = window.setTimeout(() => {
+        setIsBooked(false);
+        setValues(initialState);
+        setTouched({});
+      }, 1500);
+
+      // انتقال لصفحة حجوزاتي
+      setTimeout(() => {
+        router.push("/bookings");
+      }, 1200);
+    } catch (err: any) {
+      const msg =
+        err?.response?.data?.message ||
+        "فشل إنشاء الحجز. تحقق من توفر الغرفة ورصيد المحفظة.";
+      alert(msg);
+    }
   };
 
   return (
@@ -254,6 +301,13 @@ export default function BookingMuiCard() {
                 sx={{ mt: 4, display: "grid", gap: 2, textAlign: "right" }}
               >
                 {/* الاسم */}
+                <Typography sx={{ fontSize: 22, fontWeight: 600 }}>
+                  الفندق
+                </Typography>
+                <FormControl fullWidth>
+                  <OutlinedInput value={hotelNameParam || selectedHotelName} readOnly sx={inputRtlSx} />
+                </FormControl>
+
                 <Typography sx={{ fontSize: 22, fontWeight: 600 }}>
                   الاسم الكامل
                 </Typography>
@@ -514,7 +568,7 @@ export default function BookingMuiCard() {
                       },
                     }}
                     disabled={isBooked}
-                    onClick={() => router.push("/")}
+                    onClick={() => router.back()}
                   >
                     عودة
                   </Button>

@@ -127,11 +127,7 @@ export default function HotelsPage() {
         : api.post("/hotels", formData, { headers: { 'Content-Type': 'multipart/form-data' } });
 
       const res = await req;
-      const hotel = res.data?.data || res.data;
-      if (!hotel || !hotel.id) {
-        setSnackbar({ open: true, message: "تعذر التأكد من حفظ الفندق على الخادم", severity: "error" });
-        return;
-      }
+      console.log("HOTEL SAVE RESPONSE:", res.status, res.data);
 
       setSnackbar({
         open: true,
@@ -144,7 +140,8 @@ export default function HotelsPage() {
       setCurrentHotel({});
 
       fetchHotels();
-    } catch {
+    } catch (error: any) {
+      console.error("HOTEL SAVE ERROR:", error?.response?.status, error?.response?.data || error);
       setSnackbar({
         open: true,
         message: isEdit ? "حدث خطأ أثناء التحديث" : "حدث خطأ أثناء الإضافة",

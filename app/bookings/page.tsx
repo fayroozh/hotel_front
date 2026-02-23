@@ -45,14 +45,8 @@ export default function MyBookingsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch bookings
-    // Assuming GET /bookings returns all bookings for admin, but maybe filtered for user?
-    // If backend doesn't filter, we might see all. But typically /bookings is scoped or we need /bookings/my-bookings
-    // Let's try /bookings first as used in admin, but check if it returns only mine or all.
-    // If it returns all, we might need to filter by current user email if backend doesn't do it.
-    // Ideally backend should handle "get my bookings".
-    
-    api.get("/bookings")
+    // حجوزات المستخدم نفسه
+    api.get("/bookings/my")
       .then((res) => {
         let data = res.data;
         if (data.data) data = data.data; // Handle pagination wrapper

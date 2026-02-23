@@ -46,20 +46,6 @@ interface Room {
   is_available: boolean;
 }
 
-function normalizeArrayResponse<T>(root: any): T[] {
-  if (Array.isArray(root)) return root;
-  const candidates = [
-    root?.data,
-    root?.rooms,
-    root?.data?.rooms,
-    root?.data?.data,
-  ];
-  for (const c of candidates) {
-    if (Array.isArray(c)) return c;
-  }
-  return [];
-}
-
 export default function RoomsPage() {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [hotels, setHotels] = useState<Hotel[]>([]);
@@ -73,7 +59,7 @@ export default function RoomsPage() {
     setLoading(true);
     api.get("/rooms")
       .then((res) => {
-        setRooms(normalizeArrayResponse<Room>(res.data));
+        setRooms(res.data);
         setLoading(false);
       })
       .catch((err) => {

@@ -5,14 +5,51 @@ import {
   Typography,
   Divider,
   Button,
+  CircularProgress,
 } from "@mui/material";
 import Star from "@mui/icons-material/Star";
 import Facebook from "@mui/icons-material/Facebook";
 import Instagram from "@mui/icons-material/Instagram";
 import ArrowDownward from "@mui/icons-material/ArrowDownward";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import api from "@/lib/api";
+
+interface Hotel {
+  id: number;
+  name: string;
+  location: string;
+  stars: number;
+  description?: string | null;
+}
 
 export default function InforHotel() {
+  const [hotel, setHotel] = useState<Hotel | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // نفترض أن هذا هو فندق شيراتون حلب، مثلاً id = 1
+    const fetchHotel = async () => {
+      try {
+        const res = await api.get("/hotels/1");
+        const data = res.data;
+        setHotel({
+          id: data.id,
+          name: data.name,
+          location: data.location,
+          stars: data.stars,
+          description: data.description,
+        });
+      } catch {
+        setHotel(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHotel();
+  }, []);
+
   return (
     <Box
       sx={{
@@ -24,7 +61,7 @@ export default function InforHotel() {
         p: 4,
       }}
     >
-      {/* البطاقة الكبيرة */}
+        {/* البطاقة الكبيرة */}
       <Box
         sx={{
           width: 1200,
@@ -45,14 +82,23 @@ export default function InforHotel() {
             p: 4,
           }}
         >
-          <Typography fontWeight="bold" mb={2}>
-            معلومات الفندق :
-          </Typography>
+          {loading ? (
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <>
+              <Typography fontWeight="bold" mb={2}>
+                {hotel?.name || "معلومات الفندق"}
+              </Typography>
 
-          <Typography lineHeight={2}>
-            الموقع : مدينة حلب، مقابل ساعة باب الفرج <br />
-            رقم التواصل : +963-992-121-111
-          </Typography>
+              <Typography lineHeight={2}>
+                الموقع : {hotel?.location || "مدينة حلب، مقابل ساعة باب الفرج"}
+                <br />
+                رقم التواصل : +963-992-121-111
+              </Typography>
+            </>
+          )}
 
           <Typography fontWeight="bold" mt={3} mb={3}>
             مواقع التواصل الاجتماعي :
@@ -180,15 +226,13 @@ export default function InforHotel() {
             </Box>
           </Box>
 
-          <Typography mt={5} fontWeight="bold" >
-            شيراتون :
+          <Typography mt={5} fontWeight="bold">
+            {hotel?.name || "شيراتون"} :
           </Typography>
 
           <Typography mt={2} lineHeight={1.9}>
-            فندق خمس نجوم يقع في مدينة حلب القديمة، بالقرب من المعالم
-            التاريخية. يجمع بين الفخامة الكلاسيكية والطابع الشرقي القديم
-            للمباني الحلبية، حيث يجمع بين واجهة تاريخية تعود للقرن الـ15
-            مع مساحات داخلية عصرية.
+            {hotel?.description ||
+              "فندق خمس نجوم يقع في مدينة حلب القديمة، بالقرب من المعالم التاريخية. يجمع بين الفخامة الكلاسيكية والطابع الشرقي القديم للمباني الحلبية، حيث يجمع بين واجهة تاريخية تعود للقرن الـ15 مع مساحات داخلية عصرية."}
           </Typography>
         </Box>
       </Box>

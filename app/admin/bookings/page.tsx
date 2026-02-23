@@ -22,6 +22,15 @@ import {
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import api from "@/lib/api";
 
+function normalizeArrayResponse<T>(root: any): T[] {
+  if (Array.isArray(root)) return root;
+  const candidates = [root?.data, root?.bookings, root?.data?.bookings];
+  for (const c of candidates) {
+    if (Array.isArray(c)) return c;
+  }
+  return [];
+}
+
 
 interface Booking {
   id: number;
@@ -42,18 +51,13 @@ interface Booking {
   status: string;
 }
 
-function normalizeArrayResponse<T>(data: any): T[] {
-  if (Array.isArray(data)) return data;
-  if (data?.data && Array.isArray(data.data)) return data.data;
-  return [];
-}
-
 export default function BookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedBookingId, setSelectedBookingId] = useState<number | null>(null);
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" as "success" | "error" });
+  const [fallbackMy, setFallbackMy] = useState(false);
 
   const fetchBookings = () => {
     setLoading(true);
@@ -61,10 +65,28 @@ export default function BookingsPage() {
       .then((res) => {
         setBookings(normalizeArrayResponse(res.data));
         setLoading(false);
+        setFallbackMy(false);
       })
       .catch((err) => {
-        console.error("Failed to fetch bookings", err);
-        setLoading(false);
+        if (err?.response?.status === 403) {
+          // ليس أدمن: جرّب عرض حجوزات المستخدم كبديل
+          api.get("/bookings/my")
+            .then((res2) => {
+              setBookings(normalizeArrayResponse(res2.data));
+              setFallbackMy(true);
+              setLoading(false);
+              setSnackbar({ open: true, message: "ليست لديك صلاحية الأدمن - عرض حجوزاتك فقط", severity: "error" });
+            })
+            .catch((e2) => {
+              console.error("Failed to fetch bookings", e2);
+              setLoading(false);
+              setSnackbar({ open: true, message: "تعذر جلب الحجوزات", severity: "error" });
+            });
+        } else {
+          console.error("Failed to fetch bookings", err);
+          setLoading(false);
+          setSnackbar({ open: true, message: "تعذر جلب الحجوزات", severity: "error" });
+        }
       });
   };
 
@@ -151,6 +173,13 @@ export default function BookingsPage() {
               </TableRow>
             </TableHead>
             <TableBody>
+              {fallbackMy && (
+                <TableRow>
+                  <TableCell colSpan={9} align="center">
+                    يتم عرض حجوزاتك فقط لعدم توفر صلاحيات الأدمن
+                  </TableCell>
+                </TableRow>
+              )}
               {bookings.map((booking) => (
                 <TableRow key={booking.id}>
                   <TableCell align="right">#{booking.id}</TableCell>

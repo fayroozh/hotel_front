@@ -1,3 +1,4 @@
+"use client";
 
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -20,6 +21,33 @@ interface Hotel {
 export default function HotelsPage() {
   const [hotels, setHotels] = useState<Hotel[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const staticHotels: Hotel[] = [
+    {
+      id: 1,
+      name: "فندق سيراميلا دمشق",
+      location: "دمشق - ساحة الأمويين",
+      stars: 5,
+      description: "إقامة فاخرة في قلب العاصمة مع إطلالة مميزة وخدمات متكاملة.",
+      image: null,
+    },
+    {
+      id: 2,
+      name: "فندق سيراميلا حلب",
+      location: "حلب - العزيزية",
+      stars: 4,
+      description: "تجربة إقامة مريحة بالقرب من أهم النقاط الحيوية في المدينة.",
+      image: null,
+    },
+    {
+      id: 3,
+      name: "فندق سيراميلا اللاذقية",
+      location: "اللاذقية - الكورنيش البحري",
+      stars: 4,
+      description: "إطلالة بحرية وخدمات عائلية مميزة لقضاء عطلة ممتعة.",
+      image: null,
+    },
+  ];
 
   useEffect(() => {
     api.get('/hotels').then(res => {
@@ -74,8 +102,10 @@ export default function HotelsPage() {
           }}
         >
           {loading ? (
-            <Typography sx={{ color: "#fff", textAlign: "center" }}>جاري التحميل...</Typography>
-          ) : (
+            <Typography sx={{ color: "#fff", textAlign: "center" }}>
+              جاري التحميل...
+            </Typography>
+          ) : hotels.length > 0 ? (
             hotels.map((hotel) => (
               <HotelCard
                 key={hotel.id}
@@ -83,9 +113,18 @@ export default function HotelsPage() {
                 image={
                   hotel.image
                     ? `${BACKEND_URL}/storage/${hotel.image}`
-                    : "/default-hotel.jpg"
+                    : "/H.png"
                 }
                 href={`/hotels/${hotel.id}`}
+              />
+            ))
+          ) : (
+            staticHotels.map((hotel) => (
+              <HotelCard
+                key={hotel.id}
+                title={hotel.name}
+                image="/H.png"
+                href="/Infor-hotel"
               />
             ))
           )}

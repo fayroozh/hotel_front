@@ -63,6 +63,7 @@ export default function LoginMuiCard() {
     } catch {}
 
     try {
+      await api.get("/sanctum/csrf-cookie");
       const response = await api.post(`/login`, data, {
         headers: { Accept: "application/json" },
       });
